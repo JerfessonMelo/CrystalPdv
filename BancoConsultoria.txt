@@ -1,0 +1,134 @@
+CREATE TABLE endereco (
+    id INT AUTO_INCREMENT PRIMARY KEY
+    cidade VARCHAR(40) NOT NULL,
+    estado VARCHAR(2) NOT NULL,
+    bairro VARCHAR(40) NOT NULL,
+    logradouro VARCHAR(40) NOT NULL,
+    numero VARCHAR(10) NOT NULL,
+    cep VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE cliente (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_endereco INT,
+    nome VARCHAR(40) NOT NULL,
+    cpf VARCHAR(15) NOT NULL,
+    data_de_nascimento DATE,
+    telefone VARCHAR(15) NOT NULL,
+    FOREIGN KEY (id_endereco) REFERENCES endereco(id)
+);
+
+CREATE TABLE fornecedor (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_endereco INT,
+    nome VARCHAR(40) NOT NULL,
+    email VARCHAR(40) NOT NULL,
+    telefone VARCHAR(15) NOT NULL,
+    cnpj_cpf VARCHAR(15) NOT NULL,
+    FOREIGN KEY (id_endereco) REFERENCES endereco(id)
+);
+
+CREATE TABLE categoria(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipo_produto ENUM('Anel','Colar','Perfume','relogio','Brinco'),
+    descricao VARCHAR(40) NOT NULL
+);
+
+CREATE TABLE produto (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_categoria int,
+    preco decimal(10,2) NOT NULL,
+    nome VARCHAR(40) NOT NULL,
+    referencia VARCHAR(40) NOT NULL,
+    FOREIGN KEY (id_categoria) REFERENCES categoria(id)
+);
+
+CREATE TABLE fornecedor_produto (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_fornecedor INT,
+    id_produto INT,
+    FOREIGN KEY (id_fornecedor) REFERENCES fornecedor(id),
+    FOREIGN KEY (id_produto) REFERENCES produto(id)
+);
+
+CREATE TABLE estoque (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_produto INT,
+    quantidade INT,
+    FOREIGN KEY (id_produto) REFERENCES produto(id)
+);
+
+CREATE TABLE movimentacao_de_estoque (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_produto INT,
+    tipo_movimentacao ENUM('entrada', 'saida'),
+    quantidade INT,
+    data_movimentacao DATE,
+    FOREIGN KEY (id_produto) REFERENCES produto(id)
+);
+
+CREATE TABLE forma_de_pagamento (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipo ENUM('Pix','Dinheiro','Debito','Credito')
+);
+
+CREATE TABLE atendente (
+    id INT AUTO_INCREMENT PRIMARY KEY
+    id_usuario int,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+);
+
+CREATE TABLE status_venda (
+    id INT AUTO_INCREMENT PRIMARY KEY
+    descricao ENUM('Local','Enviado','A caminho','Entregue')
+);
+
+CREATE TABLE venda (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT,
+    id_forma_de_pagamento INT,
+    id_atendente INT,
+    id_status_venda INT,
+    data_venda DATE NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES cliente(id),
+    FOREIGN KEY (id_forma_de_pagamento) REFERENCES forma_de_pagamento(id),
+    FOREIGN KEY (id_atendente) REFERENCES atendente(id),
+    FOREIGN KEY (id_status_venda) REFERENCES status_venda(id)
+);
+
+CREATE TABLE itens_venda (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_venda INT,
+    id_produto INT,
+    quantidade INT,
+    valor_unitario DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (id_venda) REFERENCES venda(id),
+    FOREIGN KEY (id_produto) REFERENCES produto(id)
+);
+
+CREATE TABLE contas_financeiras (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    descricao VARCHAR(255) NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    tipo ENUM('receita', 'despesa') NOT NULL,
+    data_vencimento DATE NOT NULL,
+    data_pagamento DATE NULL,
+    status ENUM('pendente', 'pago') NOT NULL
+);
+
+CREATE TABLE historico_financeiro (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_venda INT NULL,
+    id_contas_financeiras INT NULL,
+    valor DECIMAL(10,2),
+    data DATE,
+    FOREIGN KEY (id_venda) REFERENCES venda(id),
+    FOREIGN KEY (id_contas_financeiras) REFERENCES contas_financeiras(id)
+);
+
+CREATE TABLE usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(40) NOT NULL,
+    senha VARCHAR(15) NOT NULL,
+    cargo ENUM('administrador', 'funcionario') NOT NULL
+);
