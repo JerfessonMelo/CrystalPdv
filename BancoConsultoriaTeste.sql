@@ -4,7 +4,6 @@ use Consultoria;
 CREATE TABLE Endereco (
     idEndereco INT PRIMARY KEY AUTO_INCREMENT,
     rua VARCHAR(100) NOT NULL,
-    numero VARCHAR(10) NOT NULL,
     bairro VARCHAR(50) NOT NULL,
     cidade VARCHAR(50) NOT NULL,
     estado CHAR(2) NOT NULL,
@@ -14,7 +13,6 @@ CREATE TABLE Cliente (
     idCliente INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
     cpf VARCHAR(14) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
     telefone VARCHAR(15) NOT NULL,
     idEndereco INT NOT NULL,
     FOREIGN KEY (idEndereco) REFERENCES Endereco(idEndereco)
