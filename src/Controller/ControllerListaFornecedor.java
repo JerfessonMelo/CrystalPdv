@@ -42,7 +42,7 @@ public class ControllerListaFornecedor {
             System.err.println("Erro ao carregar a tela: " + fxmlFile);
         }
     }
-        @FXML private void abrirTelaFornecedor() {
+        @FXML private void VoltaTelaFornecedor() {
         abrirTela("FrameFornecedor.fxml");
     }   
 }
